@@ -398,9 +398,10 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='DiffuseStyleGesture')
     parser.add_argument('--config', default='./configs/DiffuseStyleGesture.yml')
-    parser.add_argument('--gpu', type=str, default='2')
-    parser.add_argument('--no_cuda', type=list, default=['2'])
-    parser.add_argument('--model_path', type=str, default='./model000450000.pt')
+    parser.add_argument('--gpu', type=str, default='2')  # default='2'
+    parser.add_argument('--no_cuda', type=list, default=['2'])  # default=['2']
+    parser.add_argument('--model_path', type=str, default="./model000450000.pt")
+    parser.add_argument('--is_mps', type=bool, default=False)  # For Apple MacOS
     parser.add_argument('--audiowavlm_path', type=str, default='')
     parser.add_argument('--max_len', type=int, default=0)
     args = parser.parse_args()
@@ -411,8 +412,13 @@ if __name__ == '__main__':
     pprint(config)
 
     config = EasyDict(config)
-    mydevice = torch.device('cuda:' + config.gpu)
-    torch.cuda.set_device(int(config.gpu))
+    if args.is_mps:
+        mydevice = torch.device('mps')
+        torch.set_default_device(mydevice)
+    else:
+        mydevice = torch.device('cuda:' + config.gpu)
+        torch.cuda.set_device(mydevice)
+        # torch.cuda.set_device(int(config.gpu))
 
     batch_size = 1
 
