@@ -162,3 +162,4 @@ cython_debug/
 
 # Weight file
 *.pt
+.DS_Store
