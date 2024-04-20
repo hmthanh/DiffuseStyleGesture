@@ -1,13 +1,13 @@
-from os.path import join as pjoin
-
-from data_loaders.humanml.common.skeleton import Skeleton
 import numpy as np
 import os
+import torch
+from tqdm import tqdm
+
+from os.path import join as pjoin
+from data_loaders.humanml.common.skeleton import Skeleton
 from data_loaders.humanml.common.quaternion import *
 from data_loaders.humanml.utils.paramUtil import *
 
-import torch
-from tqdm import tqdm
 
 # positions (batch, joint_num, 3)
 def uniform_skeleton(positions, target_offset):
@@ -243,6 +243,7 @@ def process_file(positions, feet_thre):
         #     feet_r = (((feet_r_x + feet_r_y + feet_r_z) < velfactor) & (feet_r_h < heightfactor)).astype(np.float)
         feet_r = (((feet_r_x + feet_r_y + feet_r_z) < velfactor)).astype(np.float)
         return feet_l, feet_r
+
     #
     feet_l, feet_r = foot_detect(positions, feet_thre)
     # feet_l, feet_r = foot_detect(positions, 0.002)
@@ -397,6 +398,7 @@ def recover_from_rot(data, joints_num, skeleton):
 
     return positions
 
+
 def recover_rot(data):
     # dataset [bs, seqlen, 263/251] HumanML/KIT
     joints_num = 22 if data.shape[-1] == 263 else 21
@@ -428,6 +430,8 @@ def recover_from_ric(data, joints_num):
     positions = torch.cat([r_pos.unsqueeze(-2), positions], dim=-2)
 
     return positions
+
+
 '''
 For Text2Motion Dataset
 '''
